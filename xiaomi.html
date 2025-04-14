@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HTML</title>
+	<script src="node_modules/d3/dist/d3.js"></script>
+	<style>
+			body {
+				background-color: #f7f5f5;
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				min-height: 100vh;
+			}
+			/* 添加Logo容器样式，使用相对定位 */
+			.logo-container {
+				position: relative;
+				width: 100%;
+				height: 400px;
+				margin: 0 auto;
+			}
+			
+			/* 设置Logo的绝对定位 */
+			.xiaomi {
+				position: absolute;
+				width: 200px;
+				height: 200px;
+				transform-origin: center;
+				transition: all 0.3s ease;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
+	</style>
+</head>
+<body>
+
+<!-- 添加Logo容器 -->
+<div class="logo-container">
+  <!-- 小米logo -->
+  <svg role="xiaomi" class="xiaomi" id="xiaomi" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <title>Xiaomi</title>
+    <path d="M12 0C8.016 0 4.756.255 2.493 2.516.23 4.776 0 8.033 0 12.012c0 3.98.23 7.235 2.494 9.497C4.757 23.77 8.017 24 12 24c3.983 0 7.243-.23 9.506-2.491C23.77 19.247 24 15.99 24 12.012c0-3.984-.233-7.243-2.502-9.504C19.234.252 15.978 0 12 0zM4.906 7.405h5.624c1.47 0 3.007.068 3.764.827.746.746.827 2.233.83 3.676v4.54a.15.15 0 0 1-.152.147h-1.947a.15.15 0 0 1-.152-.148V11.83c-.002-.806-.048-1.634-.464-2.051-.358-.36-1.026-.441-1.72-.458H7.158a.15.15 0 0 0-.151.147v6.98a.15.15 0 0 1-.152.148H4.906a.15.15 0 0 1-.15-.148V7.554a.15.15 0 0 1 .15-.149zm12.131 0h1.949a.15.15 0 0 1 .15.15v8.892a.15.15 0 0 1-.15.148h-1.949a.15.15 0 0 1-.151-.148V7.554a.15.15 0 0 1 .151-.149zM8.92 10.948h2.046c.083 0 .15.066.15.147v5.352a.15.15 0 0 1-.15.148H8.92a.15.15 0 0 1-.152-.148v-5.352a.15.15 0 0 1 .152-.147Z"/>
+  </svg>
+</div>
+
+<script>
+	// 在文档加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+  // 选择小米logo (第一个SVG，用class属性来选择)
+  const xiaomiLogo = d3.select('.xiaomi');//最推荐的方式
+  //或者
+  const xiaomiLogo1 = d3.select('svg.xiaomi');
+  // 选择小米logo (第二个SVG，用role属性来选择)
+  const xiaomiLogo2 = d3.select('svg[role="xiaomi"]');
+  // 选择小米logo (第三个SVG，用id属性来选择)
+  const xiaomiLogo3 = d3.select('#xiaomi');
+  // 1. 修改小米logo的颜色为品牌橙色
+  xiaomiLogo.select('path')
+    .attr('fill', '#FF6700');
+  
+  // 2. 添加悬停效果
+  xiaomiLogo
+    .style('cursor', 'pointer')
+    .on('mouseover', function() {
+      d3.select(this).select('path')
+        .transition()
+        .duration(300)
+        .attr('fill', '#ff8c40');
+    })
+    .on('mouseout', function() {
+      d3.select(this).select('path')
+        .transition()
+        .duration(300)
+        .attr('fill', '#FF6700');
+    });
+  
+  // 3. 添加点击效果 - 旋转动画
+  xiaomiLogo.on('click', function() {
+    d3.select(this)
+      .transition()
+      .duration(1000)
+      .attrTween('transform', function() {
+        // 修改旋转中心，避免与定位冲突
+        return function(t) {
+          return `rotate(${360 * t})`;
+        };
+      });
+  });
+  
+  // 4. 添加一个动画效果 - 呼吸效果
+  function pulseEffect() {
+    xiaomiLogo
+      .transition()
+      .duration(1500)
+      .style('width', '220px')  // 使用style而不是attr
+      .style('height', '220px')
+      .transition()
+      .duration(1500)
+      .style('width', '200px')
+      .style('height', '200px')
+      .on('end', pulseEffect);
+  }
+  
+  // 启动呼吸动画
+  pulseEffect();
+  
+  // 5. 创建控制面板
+  const controls = d3.select('body')
+    .append('div')
+    .style('margin-top', '20px')
+    .style('padding', '15px')
+    .style('background-color', '#ffffff')
+    .style('border-radius', '8px')
+    .style('box-shadow', '0 2px 10px rgba(0,0,0,0.1)')
+    .style('max-width', '500px')
+    .style('margin', '20px auto')
+    .style('text-align', 'center');
+    
+  // 添加标题
+  controls.append('h3')
+    .text('小米Logo控制面板')
+    .style('margin-top', '0')
+    .style('color', '#333');
+  
+  // 添加颜色选择器
+  controls.append('label')
+    .text('Logo颜色: ')
+    .append('input')
+    .attr('type', 'color')
+    .attr('value', '#FF6700')
+    .style('margin-left', '10px')
+    .on('input', function() {
+      const color = d3.select(this).property('value');
+      xiaomiLogo.select('path').attr('fill', color);
+    });
+  
+  // 添加大小调整滑块
+  controls.append('div')
+    .style('margin-top', '10px')
+    .append('label')
+    .text('Logo大小: ')
+    .append('input')
+    .attr('type', 'range')
+    .attr('min', 100)
+    .attr('max', 300)
+    .attr('value', 200)
+    .style('margin-left', '10px')
+    .on('input', function() {
+      const size = d3.select(this).property('value') + 'px';
+      xiaomiLogo
+        .style('width', size)
+        .style('height', size);
+    });
+    
+  // 添加同步位置调整
+  controls.append('div')
+    .style('margin-top', '20px')
+    .style('display', 'flex')
+    .style('justify-content', 'center')
+    .style('align-items', 'center')
+    .style('gap', '10px');
+  
+  // 添加左右上下移动按钮
+  const moveControls = controls.append('div')
+    .style('display', 'grid')
+    .style('grid-template-columns', 'repeat(3, 30px)')
+    .style('grid-template-rows', 'repeat(3, 30px)')
+    .style('gap', '5px');
+  
+  // 上移按钮
+  moveControls.append('button')
+    .text('↑')
+    .style('grid-column', '2')
+    .style('grid-row', '1')
+    .style('cursor', 'pointer')
+    .on('click', function() {
+      moveLogoBy(0, -5);
+    });
+  
+  // 左移按钮
+  moveControls.append('button')
+    .text('←')
+    .style('grid-column', '1')
+    .style('grid-row', '2')
+    .style('cursor', 'pointer')
+    .on('click', function() {
+      moveLogoBy(-5, 0);
+    });
+  
+  // 中心按钮
+  moveControls.append('button')
+    .text('◉')
+    .style('grid-column', '2')
+    .style('grid-row', '2')
+    .style('cursor', 'pointer')
+    .on('click', function() {
+      // 使用updateLogoPosition函数重置到中心位置
+      updateLogoPosition(50, 50);
+    });
+  
+  // 右移按钮
+  moveControls.append('button')
+    .text('→')
+    .style('grid-column', '3')
+    .style('grid-row', '2')
+    .style('cursor', 'pointer')
+    .on('click', function() {
+      moveLogoBy(5, 0);
+    });
+  
+  // 下移按钮
+  moveControls.append('button')
+    .text('↓')
+    .style('grid-column', '2')
+    .style('grid-row', '3')
+    .style('cursor', 'pointer')
+    .on('click', function() {
+      moveLogoBy(0, 5);
+    });
+  
+  // 添加水平位置调整滑块
+  controls.append('div')
+    .style('margin-top', '20px')
+    .append('label')
+    .text('水平位置: ')
+    .append('input')
+    .attr('type', 'range')
+    .attr('min', 0)
+    .attr('max', 100)
+    .attr('value', 50)
+    .attr('id', 'horizontal-position')
+    .style('margin-left', '10px')
+    .style('width', '200px')
+    .on('input', function() {
+      const xPos = d3.select(this).property('value');
+      updateLogoPosition(xPos, null);
+    });
+    
+  // 添加垂直位置调整滑块
+  controls.append('div')
+    .style('margin-top', '10px')
+    .append('label')
+    .text('垂直位置: ')
+    .append('input')
+    .attr('type', 'range')
+    .attr('min', 0)
+    .attr('max', 100)
+    .attr('value', 50)
+    .attr('id', 'vertical-position')
+    .style('margin-left', '10px')
+    .style('width', '200px')
+    .on('input', function() {
+      const yPos = d3.select(this).property('value');
+      updateLogoPosition(null, yPos);
+    });
+    
+  // 辅助函数：移动Logo的位置（百分比）
+  function moveLogoBy(deltaX, deltaY) {
+    // 获取当前的水平和垂直位置（去掉%符号）
+    let currentX = parseInt(xiaomiLogo.style('left')) || 50;
+    let currentY = parseInt(xiaomiLogo.style('top')) || 50;
+    
+    if (isNaN(currentX)) currentX = 50;
+    if (isNaN(currentY)) currentY = 50;
+    
+    // 计算新位置
+    const newX = Math.min(Math.max(currentX + deltaX, 0), 100);
+    const newY = Math.min(Math.max(currentY + deltaY, 0), 100);
+    
+    // 更新位置
+    updateLogoPosition(newX, newY);
+  }
+  
+  // 辅助函数：更新Logo位置
+  function updateLogoPosition(x, y) {
+    // 如果某个参数为null，获取当前值
+    let newX = x !== null ? x : (parseInt(xiaomiLogo.style('left')) || 50);
+    let newY = y !== null ? y : (parseInt(xiaomiLogo.style('top')) || 50);
+    
+    if (isNaN(newX)) newX = 50;
+    if (isNaN(newY)) newY = 50;
+    
+    // 更新位置
+    xiaomiLogo
+      .style('left', newX + '%')
+      .style('top', newY + '%');
+    
+    // 更新滑块
+    d3.select('#horizontal-position').property('value', newX);
+    d3.select('#vertical-position').property('value', newY);
+    
+    // 根据不同的位置调整transform
+    if (newX === 50 && newY === 50) {
+      xiaomiLogo.style('transform', 'translate(-50%, -50%)');
+    } else if (newX === 50) {
+      xiaomiLogo.style('transform', 'translate(-50%, 0)');
+    } else if (newY === 50) {
+      xiaomiLogo.style('transform', 'translate(0, -50%)');
+    } else {
+      xiaomiLogo.style('transform', 'translate(0, 0)');
+    }
+  }
+});
+	</script>
+</body>
+</html>
