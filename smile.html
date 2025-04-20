@@ -16,12 +16,11 @@
 		<rect width=250 height=250 fill='#EEEEEE' />
 		<circle r=30 fill='#258ef0fb' cx=50 cy=30 />
 		<circle r=30 fill='#cf0f86c4' cx=150 cy=30 />
-		<g transform='translate(150,200) rotate(10)'>
+		<g transform='translate(100,200) rotate(10)'>
 			<path d="M0,0 A40,40 10 0,0 65,0" fill='none' stroke='gray' stroke-width=5 />	
 		</g>
   	</g>
 </svg>
-
 
 <script>
 	// 选择SVG元素
@@ -51,13 +50,13 @@
 		});
 	
 	// 示例3：动态修改嘴巴曲线
-	// setInterval(() => {
-	// 	const newRotation = Math.random() * 20 - 10; // -10到10度随机旋转
-	// 	svg.select("g > g")
-	// 		.transition()
-	// 		.duration(800)
-	// 		.attr("transform", `translate(15,60) rotate(${newRotation})`);
-	// }, 2000);
+	setInterval(() => {
+		const newRotation = Math.random() * 180 - 90; // -10到10度随机旋转
+		svg.select("g > g")
+			.transition()
+			.duration(800)
+			.attr("transform", `translate(100,200) rotate(${newRotation})`);
+	}, 300);
 
 	</script>
 </body>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scatter Plot</title>
+    <script src="d3.min.js"></script>
+  </head>
+  <body>
+    <svg width="1600" height="800" id="mainsvg" class="svgs" style="display: block; margin: 0 auto;"></svg>
+    <script>
+      const data = [
+        {x: 10, y: 20}, {x: 20, y: 30}, {x: 30, y: 40},  
+        {x: 40, y: 50}, {x: 50, y: 60}, {x: 60, y: 70}, 
+        {x: 70, y: 80}, {x: 80, y: 90}, {x: 90, y: 100}
+      ]; 
+      const svg = d3.select('#mainsvg');
+      const width = +svg.attr('width');
+      const height = +svg.attr('height');
+      const margin = {top: 60, right: 30, bottom: 60, left: 150};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('id', 'maingroup')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.x)])
+        .range([0, innerWidth]); 
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.y)])
+        .range([innerHeight, 0]);
+
+      const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
+
+      g.append('g')
+        .call(yAxis)
+        .append('text')
+        .text('Y')
+        .attr('font-size', '3em')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -innerHeight / 2)
+        .attr('y', -120)
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'black');
+
+      g.append('g')
+        .call(xAxis)
+        .attr('transform', `translate(0, ${innerHeight})`)
+        .append('text')
+        .text('X')
+        .attr('font-size', '3em')
+        .attr('x', innerWidth / 2)
+        .attr('y', 50)
+        .attr('text-anchor', 'middle')
+        .attr('fill', 'black');
+
+      d3.selectAll('.tick text').attr('font-size', '2em');
+
+      g.selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('cx', d => xScale(d.x))
+        .attr('cy', d => yScale(d.y))
+        .attr('r', 10)
+        .attr('fill', 'steelblue');
+
+      g.append('text')
+        .text('Scatter Plot')
+        .attr('font-size', '3em')
+        .attr('x', innerWidth / 2 - 200)
+        .attr('y', -10);
+    </script>
+  </body>
+</html>

@@ -18,10 +18,10 @@
 			}
 			
 			/* 设置Logo的绝对定位 */
-			.xiaomi {
+			.sustech {
 				position: absolute;
-				width: 200px;
-				height: 200px;
+				width: 800px;
+				height: 800px;
 				transform-origin: center;
 				transition: all 0.3s ease;
 				left: 50%;
@@ -40,8 +40,7 @@
       <style>
         .st0 {
           fill-rule: evenodd;
-        }
-  
+        }  
         .st0, .st1 {
           fill: #ed6c00;
         }
@@ -75,12 +74,12 @@
 	// 在文档加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
   // 选择小米logo (第一个SVG，用class属性来选择)
-  const xiaomiLogo = d3.select('.sustech');//最推荐的方式
-  xiaomiLogo.select('path')
+  const sustechLogo = d3.select('.sustech');//最推荐的方式
+  sustechLogo.select('path')
     .attr('fill', '#FF6700');
   
   // 2. 添加悬停效果
-  xiaomiLogo
+  sustechLogo
     .style('cursor', 'pointer')
     .on('mouseover', function() {
       d3.select(this).select('path')
@@ -92,11 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
       d3.select(this).select('path')
         .transition()
         .duration(300)
-        .attr('fill', '#FF6700');
+        .attr('fill', '#ff6700');
     });
   
   // 3. 添加点击效果 - 旋转动画
-  xiaomiLogo.on('click', function() {
+  sustechLogo.on('click', function() {
     d3.select(this)
       .transition()
       .duration(1000)
@@ -110,16 +109,24 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 4. 添加一个动画效果 - 呼吸效果
   function pulseEffect() {
-    xiaomiLogo
+    sustechLogo
       .transition()
       .duration(1500)
-      .style('width', '220px')  // 使用style而不是attr
-      .style('height', '220px')
+      .style('width', '820px')  // 使用style而不是attr
+      .style('height', '820px')
       .transition()
       .duration(1500)
-      .style('width', '200px')
-      .style('height', '200px')
+      .style('width', '800px')
+      .style('height', '800px')
       .on('end', pulseEffect);
+      // 如果是同步的直接递归调用（比如函数末尾直接调用自己），确实会导致堆栈溢出
+      //       function infiniteLoop() {
+      //   infiniteLoop(); // 同步调用 → 堆栈溢出
+      // }
+      // 但 D3 的 on('end') 是异步的
+      // 当前函数（pulseEffect）先完全执行完毕（包括所有过渡定义），并退出调用栈
+      // 此时 pulseEffect 已从调用栈中弹出，函数早已执行完毕，但动画仍在浏览器运行
+      // 动画完成后触发 on('end')
   }
   
   // 启动呼吸动画
@@ -152,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .style('margin-left', '10px')
     .on('input', function() {
       const color = d3.select(this).property('value');
-      xiaomiLogo.select('path').attr('fill', color);
+      sustechLogo.select('path').attr('fill', color);
     });
   
   // 添加大小调整滑块
@@ -168,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .style('margin-left', '10px')
     .on('input', function() {
       const size = d3.select(this).property('value') + 'px';
-      xiaomiLogo
+      sustechLogo
         .style('width', size)
         .style('height', size);
     });
@@ -278,8 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // 辅助函数：移动Logo的位置（百分比）
   function moveLogoBy(deltaX, deltaY) {
     // 获取当前的水平和垂直位置（去掉%符号）
-    let currentX = parseInt(xiaomiLogo.style('left')) || 50;
-    let currentY = parseInt(xiaomiLogo.style('top')) || 50;
+    let currentX = parseInt(sustechLogo.style('left')) || 50;
+    let currentY = parseInt(sustechLogo.style('top')) || 50;
     
     if (isNaN(currentX)) currentX = 50;
     if (isNaN(currentY)) currentY = 50;
@@ -295,14 +302,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // 辅助函数：更新Logo位置
   function updateLogoPosition(x, y) {
     // 如果某个参数为null，获取当前值
-    let newX = x !== null ? x : (parseInt(xiaomiLogo.style('left')) || 50);
-    let newY = y !== null ? y : (parseInt(xiaomiLogo.style('top')) || 50);
+    let newX = x !== null ? x : (parseInt(sustechLogo.style('left')) || 50);
+    let newY = y !== null ? y : (parseInt(sustechLogo.style('top')) || 50);
     
     if (isNaN(newX)) newX = 50;
     if (isNaN(newY)) newY = 50;
     
     // 更新位置
-    xiaomiLogo
+    sustechLogo
       .style('left', newX + '%')
       .style('top', newY + '%');
     
@@ -312,13 +319,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 根据不同的位置调整transform
     if (newX === 50 && newY === 50) {
-      xiaomiLogo.style('transform', 'translate(-50%, -50%)');
+      sustechLogo.style('transform', 'translate(-50%, -50%)');
     } else if (newX === 50) {
-      xiaomiLogo.style('transform', 'translate(-50%, 0)');
+      sustechLogo.style('transform', 'translate(-50%, 0)');
     } else if (newY === 50) {
-      xiaomiLogo.style('transform', 'translate(0, -50%)');
+      sustechLogo.style('transform', 'translate(0, -50%)');
     } else {
-      xiaomiLogo.style('transform', 'translate(0, 0)');
+      sustechLogo.style('transform', 'translate(0, 0)');
     }
   }
 });

@@ -33,16 +33,16 @@
         .domain(data.map(datum => datum.name))
         .range([0, innerHeight])
         .padding(0.1);
-
+        // 测试比例尺
         console.log(xScale(12));
         console.log(yScale('Wen-Yang'));
 
-        // the following lines are improved version of the above four lines, 
-        // which configurates more attributes and adds two axis labels; 
-        const yAxis = d3.axisLeft(yScale)//.tickSize(-innerWidth);
-        const xAxis = d3.axisBottom(xScale)//.tickSize(-innerHeight);
+        // 接收一个比例尺 
+        // 返回一个可以在 SVG 上调用的“坐标轴生成器”函数
+        const yAxis = d3.axisLeft(yScale)
+        const xAxis = d3.axisBottom(xScale)
 
-        const yAxisGroup = g.append('g').call(yAxis)
+        const yAxisGroup = g.append('g').call(yAxis)// 调用坐标轴生成器函数
         .append('text') // ----------
         .text('Name')
         .attr('font-size', '3em')
@@ -51,7 +51,7 @@
         .attr('y', -120)
         .attr('text-anchor', 'middle')
         .attr('fill', 'black');
-        const xAxisGroup = g.append('g').call(xAxis)
+        const xAxisGroup = g.append('g').call(xAxis)// 调用坐标轴生成器函数
         .attr('transform', `translate(${0}, ${innerHeight})`)
         .append('text') // ----------
         .text('Value')
