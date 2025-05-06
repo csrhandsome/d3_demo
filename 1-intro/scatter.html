@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scatter Plot</title>
+    <script src="d3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .axis-label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <svg width="500" height="300" id="mainsvg" style="display: block; margin: 0 auto;"></svg>
+    <script>
+        const dataset = [
+            { id: 1, xVal: 10, yVal: 25 }, { id: 2, xVal: 45, yVal: 70 }, { id: 3, xVal: 30, yVal: 30 },
+            { id: 4, xVal: 50, yVal: 90 }, { id: 5, xVal: 20, yVal: 40 }, { id: 6, xVal: 75, yVal: 60 },
+            { id: 7, xVal: 90, yVal: 10 }
+        ];
+
+        const svg = d3.select('#mainsvg');
+        const width = +svg.attr('width');
+        const height = +svg.attr('height');
+        const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, d => d.xVal)])
+            .range([0, innerWidth]);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, d => d.yVal)])
+            .range([innerHeight, 0]);
+
+        // Add circles
+        g.selectAll('circle')
+            .data(dataset)
+            .enter()
+            .append('circle')
+                .attr('cx', d => xScale(d.xVal))
+                .attr('cy', d => yScale(d.yVal))
+                .attr('r', 5)
+                .attr('fill', 'steelblue');
+
+        // Add axes
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+
+        g.append('g')
+            .attr('transform', `translate(0, ${innerHeight})`)
+            .call(xAxis);
+
+        g.append('g')
+            .call(yAxis);
+
+        // Add axis labels
+        g.append('text')
+            .attr('class', 'axis-label')
+            .attr('x', innerWidth / 2)
+            .attr('y', innerHeight + margin.bottom - 10)
+            .attr('text-anchor', 'middle')
+            .text('X Value');
+
+        g.append('text')
+            .attr('class', 'axis-label')
+            .attr('transform', 'rotate(-90)')
+            .attr('x', -innerHeight / 2)
+            .attr('y', -margin.left + 15)
+            .attr('text-anchor', 'middle')
+            .text('Y Value');
+    </script>
+</body>
+</html>
